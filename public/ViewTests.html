@@ -1,0 +1,169 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tests by Date</title>
+  <style>
+body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+#forms-container {
+  margin: 20px auto;
+  width: 80%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+}
+
+#forms-container h2 {
+  margin-top: 0;
+}
+
+form {
+  margin-bottom: 20px;
+}
+
+form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+form input[type="text"],
+form input[type="date"] {
+  padding: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+form button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+}
+
+form button[type="submit"]:hover {
+  background-color: #4CAF50;
+}
+
+.alert {
+  background-color: #f44336;
+  color: #ffffff;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+#tests-container {
+  margin: 50px auto;
+  width: 80%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+}
+
+#tests-container div {
+  margin-bottom: 10px;
+}
+#date-form{
+  margin: 50px auto;
+  width: 50%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+}
+form button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+display: block;
+margin: 0 auto;
+}
+  </style>
+    </head>
+  <body>
+    <h1>Tests by Date</h1>
+    <div id="tests-container"></div>
+    <form id="date-form">
+      <label for="date">Enter Date:</label>
+      <input type="date" id="date" name="date" required>
+
+      <button type="submit">Get Tests</button>
+    </form>
+
+ 
+
+    <script src="script.js"></script>
+  </body>
+  <script>
+const form = document.querySelector('#date-form');
+const testsContainer = document.querySelector('#tests-container');
+
+form.addEventListener('submit', async (event) => {
+  event.preventDefault();
+
+  const date = form.elements.date.value;
+
+  try {
+    const response = await fetch(`/date/${date}`);
+    const tests = await response.json();
+    displayTests(tests);
+  } catch (err) {
+    console.error(err);
+    testsContainer.innerHTML = '<p>Something went wrong. Please try again later.</p>';
+  }
+});
+
+function displayTests(tests) {
+  const table = document.createElement('table');
+  const tableHead = document.createElement('thead');
+  const tableBody = document.createElement('tbody');
+
+  const tableHeadRow = document.createElement('tr');
+  const tableHeadTestCount = document.createElement('th');
+  const tableHeadStatuses = document.createElement('th');
+
+  tableHeadTestCount.textContent = 'Test Count';
+  tableHeadStatuses.textContent = 'Statuses';
+
+  tableHeadRow.appendChild(tableHeadTestCount);
+  tableHeadRow.appendChild(tableHeadStatuses);
+
+  tableHead.appendChild(tableHeadRow);
+
+  const tableBodyRow = document.createElement('tr');
+  const tableBodyTestCount = document.createElement('td');
+  const tableBodyStatuses = document.createElement('td');
+
+  tableBodyTestCount.textContent = tests.test_count;
+  tableBodyStatuses.textContent = tests.statuses;
+
+  tableBodyRow.appendChild(tableBodyTestCount);
+  tableBodyRow.appendChild(tableBodyStatuses);
+
+  tableBody.appendChild(tableBodyRow);
+
+  table.appendChild(tableHead);
+  table.appendChild(tableBody);
+
+  testsContainer.innerHTML = '';
+  testsContainer.appendChild(table);
+}
+
+
+  </script>
+</html>

@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Form For Regular License</title>
+    <style>
+      body {
+  background-color: #f0f0f0;
+  font-family: Arial, sans-serif;
+}
+
+h1 {
+  color: #333;
+  text-align: center;
+  margin-top: 50px;
+}
+
+form {
+  background-color: #fff;
+  border-radius: 5px;
+  box-shadow: 0px 2px 5px rgba(0, 0, 0, 0.3);
+  padding: 20px;
+  margin: 0 auto;
+  max-width: 600px;
+}
+
+label {
+  display: block;
+  margin-bottom: 10px;
+  font-weight: bold;
+}
+
+input[type="text"],
+button[type="submit"] {
+  display: block;
+  width: 100%;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 3px;
+  border: 1px solid #ccc;
+  box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+  outline: none;
+  border-color: #80bdff;
+  box-shadow: 0 0 0 2px rgba(0, 123, 255, 0.2);
+}
+
+button[type="submit"] {
+  background-color:  #4CAF50;
+  color: #fff;
+  border: none;
+  cursor: pointer;
+}
+
+button[type="submit"]:hover {
+  background-color:  #4CAF50;
+}
+
+.error {
+  color: red;
+  font-weight: bold;
+  margin-top: 5px;
+}
+
+    </style>
+  </head>
+  <body>
+    <h1>Form For Regular License</h1>
+
+    <form id="Form" action = "/Form/fillform" method="post">
+      <label for="full-name">Full Name:</label>
+      <input type="text" id="full-name" name="full-name" required>
+
+      <label for="cnic">CNIC:</label>
+      <input type="text" id="cnic" name="cnic" required>
+
+      <label for="head-name">Head Name:</label>
+      <input type="text" id="head-name" name="head-name">
+
+      <label for="disabilities">Disabilities:</label>
+      <input type="text" id="disabilities" name="disabilities">
+
+      <label for="marriage-status">Marriage Status:</label>
+      <input type ="text" id="marriage-status" name="marriage-status">
+
+      <label for="education">Education:</label>
+      <input type="text" id="education" name="education">
+
+      <button type="submit">Submit</button>
+    </form>
+
+    <script>
+  const form = document.getElementById("Form");
+  form.addEventListener("submit", async (event) => {
+  event.preventDefault();
+  const fullName = document.getElementById("full-name").value;
+  const cnic = document.getElementById("cnic").value;
+  const headName = document.getElementById("head-name").value;
+  const disabilities = document.getElementById("disabilities").value;
+  const marriageStatus = document.getElementById("marriage-status").value;
+  const education = document.getElementById("education").value;
+  try {
+    const response = await fetch("/Form/fillform", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        fullName,
+        cnic,
+        headName,
+        disabilities,
+        marriageStatus,
+        education
+      })
+    });
+    console.log("html " + fullName + " " + cnic + " " + headName + " " + disabilities + " " + marriageStatus + " " + education);
+    const data = await response.json();
+    console.log(data);
+    if (data.success) {
+      alert('Form submission failed');
+      form.reset();
+    } else {
+      alert('Form submitted successfully!');
+    }
+  } catch (error) {
+    console.error(error);
+    alert('Server error!');
+  }
+});
+
+
+    </script>
+  </body>
+</html>

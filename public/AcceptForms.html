@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Review Forms</title>
+    <style>
+      body {
+        font-family: Arial, sans-serif;
+        font-size: 16px;
+        margin: 0;
+        padding: 0;
+        background-color: #f2f2f2;
+      }
+      h1 {
+        text-align: center;
+        margin-top: 50px;
+      }
+      #forms-container {
+        margin: 50px auto;
+        width: 80%;
+        border: 1px solid #ccc;
+        padding: 20px;
+        background-color: #fff;
+      }
+      #forms-container div {
+        margin-bottom: 10px;
+      }
+      h2 {
+        text-align: center;
+      }
+      #form-submit {
+        margin: 50px auto;
+        width: 50%;
+        border: 1px solid #ccc;
+        padding: 20px;
+        background-color: #fff;
+      }
+      #form-submit label {
+        display: block;
+        margin-bottom: 10px;
+      }
+      #form-submit input[type="text"],
+      #form-submit select {
+        width: 100%;
+        padding: 5px;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        margin-bottom: 10px;
+        box-sizing: border-box;
+      }
+
+      #form-submit input[type="submit"] {
+        background-color: #4CAF50;
+        color: white;
+        padding: 10px 20px;
+        border: none;
+        border-radius: 5px;
+        cursor: pointer;
+        font-size: 16px;
+        display: block;
+        margin: 0 auto;
+      }
+
+      #message {
+        text-align: center;
+        margin-top: 20px;
+      }
+    </style>
+
+  </head>
+  <body>
+    <h1>Review Forms</h1>
+    <div id="forms-container"></div>
+    <h2>Accept/Reject Form</h2>
+    <div id="message"></div>
+    <form id="form-submit">
+      <label for="cnic-input">CNIC:</label>
+      <input type="text" id="cnic-input" name="cnic"><br><br>
+      <label for="status-input">Status:</label>
+      <select id="status-input" name="status">
+        <option value="true">Accept</option>
+        <option value="false">Reject</option>
+      </select><br><br>
+      <input type="submit" value="Submit">
+    </form>
+    
+
+    <script>
+      const formsContainer = document.getElementById("forms-container");
+      const formSubmit = document.getElementById("form-submit");
+      const message = document.getElementById("message");
+      const assignEmployeeForm = document.getElementById("assign-employee-form");
+
+
+      async function getForms() {
+        try {
+          const response = await fetch("/Form/UnacceptedForms");
+          const forms = await response.json();
+          console.log(forms.forms);
+
+          if (forms.forms && forms.forms.length > 0) {
+            formsContainer.innerHTML = "";
+            forms.forms.forEach(form => {
+              const formDiv = document.createElement("div");
+              const formText = document.createTextNode(`Form ${form.ID}: FullName: ${form.FullName} CNIC: ${form.CNIC} HeadName: ${form.HeadName} Diabilities: ${form.Disabilities} MarriageStatus: ${form.MarriageStatus} Education: ${form.Education}3`);
+              formDiv.appendChild(formText);
+              formsContainer.appendChild(formDiv);
+            });
+          } else {
+            formsContainer.innerText = "No forms found.";
+          }
+        } catch (error) {
+          console.log(error);
+          formsContainer.innerText = "An error occurred while retrieving forms.";
+        }
+      }
+
+      async function submitForm(event) {
+        event.preventDefault();
+        const cnicInput = document.getElementById("cnic-input").value;
+        const statusInput = document.getElementById("status-input").value;
+
+        try {
+          const response = await fetch("/Officer/acceptForm", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              CNIC: cnicInput,
+              accepted: statusInput === "true" ? true : false
+            })
+          });
+          const result = await response.json();
+          message.innerText = result.message;
+          getForms(); // Update the list of forms after submitting the form
+        } catch (error) {
+          console.log(error);
+          message.innerText = "An error occurred while submitting the form.";
+        }
+      }
+      
+      formSubmit.addEventListener("submit", submitForm);
+      getForms();
+    </script>
+  </body>
+</html>

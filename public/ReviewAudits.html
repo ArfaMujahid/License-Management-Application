@@ -1,0 +1,153 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Review Audits</title>
+    <style>
+      body {
+  font-family: Arial, sans-serif;
+  font-size: 16px;
+  margin: 0;
+  padding: 0;
+  background-color: #f2f2f2;
+}
+
+/* Header Styles */
+h1 {
+  text-align: center;
+  margin-top: 50px;
+}
+
+/* Audits Container Styles */
+#audits-container {
+  margin: 50px auto;
+  width: 80%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+}
+
+#audits-container div {
+  margin-bottom: 10px;
+}
+
+/* Form Submit Styles */
+h2 {
+  text-align: center;
+}
+
+#audit-submit {
+  margin: 50px auto;
+  width: 50%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+}
+
+#audit-submit label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+#audit-submit input[type="text"],
+#audit-submit select {
+  width: 100%;
+  padding: 5px;
+  border: 1px solid #ccc;
+  border-radius: 5px;
+  margin-bottom: 10px;
+  box-sizing: border-box;
+}
+
+#audit-submit input[type="submit"] {
+  background-color: #4CAF50;
+  color: white;
+  padding: 10px 20px;
+  border: none;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+  display: block;
+  margin: 0 auto;
+}
+
+#message {
+  text-align: center;
+  margin-top: 20px;
+}
+    </style>
+  </head>
+  <body>
+    <h1>Review Audits</h1>
+    <div id="audits-container"></div>
+    <h2>Accept/Reject Audit</h2>
+    <form id="audit-submit">
+      <label for="cnic-input">CNIC:</label>
+      <input type="text" id="cnic-input" name="cnic"><br><br>
+      <label for="status-input">Status:</label>
+      <select id="status-input" name="status">
+        <option value="true">Accept</option>
+        <option value="false">Reject</option>
+      </select><br><br>
+      <input type="submit" value="Submit">
+    </form>
+    <div id="message"></div>
+    <script>
+      const auditsContainer = document.getElementById("audits-container");
+      const auditSubmit = document.getElementById("audit-submit");
+      const message = document.getElementById("message");
+
+      async function getAudits() {
+        try {
+          const response = await fetch("/Officer/audits");
+          const tests = await response.json();
+          console.log(tests);
+
+          if (tests && tests.length > 0) {
+            auditsContainer.innerHTML = "";
+            tests.forEach(test => {
+              const testDiv = document.createElement("div");
+              const testText = document.createTextNode(`Test: CNIC: ${test.CNIC}, FullName: ${test.fullname}, HeadName: ${test.headname}, criminalRecord: ${test.criminalRecord}, BirthPlace: ${test.BirthPlace},DOB: ${test.dateofbirth}`);
+              testDiv.appendChild(testText);
+              auditsContainer.appendChild(testDiv);
+            });
+          } else {
+            auditsContainer.innerText = "No audits found.";
+          }
+        } catch (error) {
+          console.log(error);
+          auditsContainer.innerText = "An error occurred while retrieving audits.";
+        }
+      }
+
+
+      async function submitAudit(event) {
+        event.preventDefault();
+        const cnicInput = document.getElementById("cnic-input").value;
+        const statusInput = document.getElementById("status-input").value;
+
+        try {
+          const response = await fetch("/Officer/acceptAudit", {
+            method: "POST",
+            headers: {
+              "Content-Type": "application/json"
+            },
+            body: JSON.stringify({
+              CNIC: cnicInput,
+              accepted: statusInput === "true" ? true : false
+            })
+          });
+          const result = await response.json();
+          message.innerText = result.message;
+          getAudits(); 
+        } catch (error) {
+          console.log(error);
+          message.innerText = "An error occurred while submitting the form.";
+        }
+      }
+
+      auditSubmit.addEventListener("submit", submitAudit);
+      getAudits();
+    </script>
+  </body>
+</html>

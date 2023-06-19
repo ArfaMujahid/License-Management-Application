@@ -1,0 +1,359 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Tests</title>
+    <style>
+      body {
+  font-family: Arial, sans-serif;
+  background-color: #f0f0f0;
+}
+
+h1 {
+  text-align: center;
+  margin: 20px 0;
+}
+
+#forms-container {
+  margin: 20px 0;
+}
+
+form {
+  background-color: #ffffff;
+  padding: 20px;
+  border-radius: 5px;
+  margin-bottom: 20px;
+}
+
+form h2 {
+  margin-top: 0;
+}
+
+form label {
+  display: block;
+  margin-bottom: 10px;
+}
+
+form input[type="text"],
+form input[type="date"] {
+  padding: 5px;
+  width: 100%;
+  box-sizing: border-box;
+  border: 1px solid #ccc;
+  border-radius: 3px;
+  margin-bottom: 20px;
+}
+
+form button[type="submit"] {
+  padding: 10px 20px;
+  background-color: #4CAF50;
+  color: #ffffff;
+  border: none;
+  border-radius: 3px;
+  cursor: pointer;
+display: block;
+margin: 0 auto;
+}
+
+
+form button[type="submit"]:hover {
+  background-color: #4CAF50;
+}
+
+.alert {
+  background-color: #f44336;
+  color: #ffffff;
+  padding: 10px;
+  margin-bottom: 20px;
+  border-radius: 5px;
+}
+/* Audits Container Styles */
+#forms-container {
+  margin: 50px auto;
+  width: 80%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+}
+
+#forms-container div {
+  margin-bottom: 10px;
+}
+#update-test-form {
+  margin: 50px auto;
+  width: 50%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+}
+#assign-employee-form{
+  margin: 50px auto;
+  width: 50%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+}
+#assign-CNIC-form{
+  margin: 50px auto;
+  width: 50%;
+  border: 1px solid #ccc;
+  padding: 20px;
+  background-color: #fff;
+}
+
+
+
+    </style>
+  </head>
+  <body>
+    <h1>Review Tests</h1>
+    <div id="forms-container"></div>
+    <div id="response"></div>
+
+    <form id="update-test-form" >
+      <h2>Update Test Status</h2>
+      <label for="cnic-input">CNIC:</label>
+      <input type="text" id="cnic-input" name="cnic" required>
+      <label for="written-status-input">Written Test Status:</label>
+      <input type="text" id="written-status-input" name="written-test-status" required>
+      <label for="oral-status-input">Oral Test Status:</label>
+      <input type="text" id="oral-status-input" name="oral-test-status" required>
+      <label for="driving-status-input">Driving Test Status:</label>
+      <input type="text" id="driving-status-input" name="driving-test-status" required>
+      <button type="submit" id="update-test-button">Update Test Status</button>
+    </form>
+    
+    <form id="assign-employee-form" action="/Officer/assignemployee"method="post">
+      <h2>Assign Employee to Test</h2>
+      <label for="employee-id-input">Employee ID:</label>
+      <input type="text" id="employee-id-input" name="employee-id" required>
+      <label for="test-date-input">Test Date:</label>
+      <input type="date" id="test-date-input" name="test-date" required>
+      <button type="submit" id="assign-employee-button">Assign Employee to Test</button>
+    </form>
+    <form id="assign-CNIC-form" action="/Officer/assignTestDateToCNIC" method="post">
+      <h2>Allocate Test Date To CNIC</h2>
+      <label for="user-id-input">CNIC:</label>
+      <input type="text" id="user-id-input" name="CNIC" required>
+      <label for="user-test-date-input">Test Date:</label>
+      <input type="date" id="user-test-date-input" name="testDate" required>
+      <button type="submit" id="assign-user-button">Allocate Test Date To CNIC</button>
+    </form>
+    
+    <script>
+      const formsContainer = document.getElementById("forms-container");
+  
+      async function getTests() {
+        try {
+          const response = await fetch("/Officer/allTests");
+          const tests = await response.json();
+          // console.log(tests);
+
+          if (tests && tests.length > 0) {
+            formsContainer.innerHTML = "";
+            tests.forEach(test => {
+              const testDiv = document.createElement("div");
+              const testText = document.createTextNode(`Test: CNIC: ${test.CNIC}, TestDate: ${test.testdate}, Written: ${test.writtenteststatus}, Driving: ${test.drivingteststatus}, Oral: ${test.oralteststatus},EmployeeID: ${test.EmployeeID}, Status: ${test.status}`);
+              testDiv.appendChild(testText);
+              formsContainer.appendChild(testDiv);
+            });
+          } else {
+            formsContainer.innerText = "No tests found.";
+          }
+        } catch (error) {
+          console.log(error);
+          formsContainer.innerText = "An error occurred while retrieving tests.";
+        }
+      }
+
+
+
+// //??
+//       async function updateTestStatus(event) {
+//         event.preventDefault();
+//         const cnicInput = document.getElementById("cnic-input").value;
+//         const writtenStatusInput = document.getElementById("written-status-input").value;
+//         const oralStatusInput = document.getElementById("oral-status-input").value;
+//         const drivingStatusInput = document.getElementById("driving-status-input").value;
+        
+//         try {
+//           const response = await fetch("/Officer/updateStatus" + cnicInput, {
+//             method: "PUT",
+//             headers: {
+//               "Content-Type": "application/json"
+//             },
+//             body: JSON.stringify({
+//               CNIC : cnicInput,
+//               writtenTestStatus : writtenStatusInput,
+//               oralTestStatus : oralStatusInput,
+//               drivingTestStatus : drivingStatusInput
+//             })
+//           });
+
+//           const success = await response.json();
+//           console.log(success);
+//           if (success) {
+//             alert("Test status updated successfully.");
+//           } else {
+//             alert("Update Failed!");
+//           }
+//         } catch (error) {
+//           console.log(error);
+//           alert("An error occurred while updating test status.");
+//         }
+//         getTests();
+//       }
+//
+
+
+
+
+
+const updateTestForm = document.getElementById("update-test-form");
+const responseDiv = document.getElementById("response");
+
+
+
+async function updatetest()
+{
+  const cnic = document.getElementById("cnic-input").value;
+  const writtenTestStatus = document.getElementById("written-status-input").value;
+  const oralTestStatus = document.getElementById("oral-status-input").value;
+  const drivingTestStatus = document.getElementById("driving-status-input").value;
+
+  const response = await fetch("/Officer/updatetest", {
+    method: "POST",
+    headers: { "Content-Type": "application/json" },
+    body: JSON.stringify({
+      cnic,
+      writtenTestStatus,
+      oralTestStatus,
+      drivingTestStatus
+    })
+  })
+
+  // console.log("HTML " + cnic + writtenTestStatus + oralTestStatus + drivingTestStatus);
+  const data = await response.json();
+  responseDiv.innerHTML = data.message;
+  form.reset();
+
+}
+
+
+//done    
+      const assignCNICDateForm = document.getElementById("assign-CNIC-form");
+      async function assignTestDateToCNIC(event) {
+      event.preventDefault();
+
+      const CNIC = document.getElementById('user-id-input').value;
+      const testDate = document.getElementById('user-test-date-input').value;
+
+      try {
+      const response = await fetch('/Officer/assignTestDateToCNIC', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        CNIC,
+        testDate
+      })
+    });
+
+    if (!response.ok) {
+      throw new Error('Network response was not ok');
+    }
+    const message = await response.text();
+    console.log(message);
+
+    // Display the message in the assigned-cnic-message div
+    const assignedCnicMessage = document.getElementById('assigned-cnic-message');
+    assignedCnicMessage.innerHTML = message;
+    } catch (error) {
+    console.error('There was a problem with the fetch operation:', error);
+  }
+  getTests();
+}
+
+// JavaScript code for the form submission
+
+const assignEmployeeForm = document.getElementById("assign-employee-form");
+const resultDiv = document.getElementById("response");
+async function assignEmployee(event) {
+  event.preventDefault();
+
+  const employeeId = document.getElementById("employee-id-input").value;
+  const testDate = document.getElementById("test-date-input").value;
+
+  console.log(employeeId + " " + testDate);
+  try {
+    const response = await fetch('/Officer/assignemployee', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/x-www-form-urlencoded'
+      },
+      body: new URLSearchParams({
+        employeeId,
+        testDate
+      })
+    });
+
+    const data = await response.json();
+    console.log(data);
+    if (data.success) {
+      resultDiv.innerHTML = "Success";
+    } else {
+      resultDiv.innerHTML = "Error -- " + data.message;
+    }
+  } catch (error) {
+    console.error(`Error: ${error}`);
+  }
+  getTests();
+}
+
+// const assignEmployeeForm = document.getElementById("assign-employee-form");
+// assignEmployeeForm.addEventListener("submit", assignEmployee);
+// const resultDiv = document.getElementById("response");
+// //??
+// async function assignEmployee(event) {
+//   event.preventDefault();
+
+//   const employeeId = document.getElementById("employee-id-input").value;
+//   const testDate = document.getElementById("test-date-input").value;
+
+
+//   console.log(employeeId + " " + testDate);
+//   try {
+//     const response = await fetch("/Officer/assign-employee", {
+//       method: 'POST',
+//       headers: {
+//         'Content-Type': 'application/x-www-form-urlencoded'
+//       },
+//       body: new URLSearchParams({
+//         employeeId,
+//         testDate
+//       })
+//     });
+// // 
+//     const data = await response.json();
+//     console.log(data);
+//     if (data === 0) {
+//       resultDiv.innerHTML = "Error --";
+//     } else if (data.success === 1) {
+//       resultDiv.innerHTML = "Success";
+//     }
+//   } catch (error) {
+//     console.error("Error: ${error}");
+//   }
+//   getTests();
+// }
+
+
+    updateTestForm.addEventListener("submit", updatetest);
+    assignEmployeeForm.addEventListener("submit", assignEmployee);
+    assignCNICDateForm.addEventListener("submit", assignTestDateToCNIC);
+ 
+    getTests();
+    </script>
+  </body>
+</html>

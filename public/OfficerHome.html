@@ -1,0 +1,107 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Officer HOME</title>
+    <style>
+      body {
+        background-color: #f2f2f2;
+        font-family: Arial, sans-serif;
+      }
+      h1 {
+        text-align: center;
+        color: #333;
+      }
+      button {
+        display: inline-block;
+        vertical-align: middle;
+        background-color:  #4CAF50;
+        color: #fff;
+        border: none;
+        border-radius: 10px;
+        padding: 15px 30px;
+        margin: 10px;
+        cursor: pointer;
+        font-size: 1.2rem;
+        
+      }
+      button:hover {
+        background-color: #4CAF50;
+      }
+      #forms-container {
+        margin-top: 20px;
+        padding: 20px;
+        background-color: #fff;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+      }
+      #forms-container div {
+        margin-bottom: 10px;
+      }
+      
+    </style>
+  </head>
+  <body>
+    <h1>OfficerHome</h1>
+    <button id="view-forms-button">View All Forms</button>
+    <button id="view-accepted-forms-button">View Accepted Forms</button>
+    <button class="review-button" onclick="window.location.href = 'AcceptForms.html'">Review Forms</button>
+    <button class="review-button" onclick="window.location.href = 'ReviewAudits.html'">Review Audits</button>
+    <button id="view-tests-button" onclick="window.location.href = 'ReviewTests.html'">Review Tests</button>
+    
+    <div id="forms-container"></div>
+    <script>
+      const formsContainer = document.getElementById("forms-container");
+      const viewFormsButton = document.getElementById("view-forms-button");
+      const viewAcceptedFormsButton = document.getElementById("view-accepted-forms-button");
+
+      viewFormsButton.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/Officer/AllFormData");
+          const forms = await response.json();
+          console.log(forms);
+
+          if (forms && forms.length > 0) {
+            formsContainer.innerHTML = "";
+            forms.forEach(form => {
+              const formDiv = document.createElement("div");
+              const formText = document.createTextNode(`Form ${form.ID}: FullName: ${form.FullName} CNIC: ${form.CNIC} HeadName: ${form.HeadName} Diabilities: ${form.Disabilities} MarriageStatus: ${form.MarriageStatus} Education: ${form.Education},${form.Accepted}`);
+              formDiv.appendChild(formText);
+              formsContainer.appendChild(formDiv);
+            });
+          } else {
+            formsContainer.innerText = "No forms found.";
+          }
+        } catch (error) {
+          console.log(error);
+          formsContainer.innerText = "An error occurred while retrieving forms.";
+        }
+      });
+
+      viewAcceptedFormsButton.addEventListener("click", async () => {
+        try {
+          const response = await fetch("/Form/AcceptedForms");
+          const forms = await response.json();
+          console.log(forms.forms);
+
+          if (forms.forms && forms.forms.length > 0) {
+            formsContainer.innerHTML = "";
+            forms.forms.forEach(form => {
+              const formDiv = document.createElement("div");
+              const formText = document.createTextNode(`Form ${form.ID}: FullName: ${form.FullName} CNIC: ${form.CNIC} HeadName: ${form.HeadName} Diabilities: ${form.Disabilities} MarriageStatus: ${form.MarriageStatus} Education: ${form.Education}`);
+              formDiv.appendChild(formText);
+              formsContainer.appendChild(formDiv);
+            });
+          } else {
+            formsContainer.innerText = "No forms found.";
+          }
+        } catch (error) {
+          console.log(error);
+          formsContainer.innerText = "An error occurred while retrieving forms.";
+        }
+      });
+
+  
+    </script>
+  </body>
+</html>

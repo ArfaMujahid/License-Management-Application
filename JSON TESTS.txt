@@ -1,0 +1,23 @@
+JSON TESTS
+
+Test Users - insert/POST
+/Users
+{
+  "username": "Tom",
+  "CNIC": "3005309890246",
+  "password": "123"
+}
+
+Test Users - Update/PUT
+/Users/id
+{
+  "username": "Tom",
+  "CNIC": "3005309890246",
+  "password": "123updated"
+}
+
+Test Users - select/GET
+/Users
+
+Test Users - deletd/DELETE
+/Users/id

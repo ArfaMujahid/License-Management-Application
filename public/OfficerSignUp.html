@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>SignUp Page</title>
+    <style>
+      h1 {
+        font-size: 2.5rem;
+        text-align: center;
+        margin-top: 3rem;
+      }
+
+      form {
+        max-width: 400px;
+        margin: 0 auto;
+        padding: 2rem;
+        background-color: #fff;
+        border: 1px solid #ddd;
+        border-radius: 5px;
+        box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+      }
+
+      label {
+        display: block;
+        margin-bottom: 0.5rem;
+      }
+
+      input[type="text"],
+      input[type="email"],
+      input[type="password"] {
+        width: 100%;
+        padding: 0.5rem;
+        margin-bottom: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 3px;
+        font-size: 1rem;
+        box-sizing: border-box;
+      }
+
+      input[type="submit"] {
+        width: 100%;
+        padding: 0.5rem;
+        margin-top: 1rem;
+        border: none;
+        border-radius: 3px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color:  #4CAF50;
+        cursor: pointer;
+      }
+
+      input[type="submit"]:hover {
+        background-color:  #4CAF50;
+      }
+
+      #message {
+        margin-top: 1rem;
+        text-align: center;
+        font-weight: bold;
+      }
+
+      #login-btn {
+        display: block;
+        margin: 1rem auto;
+        padding: 0.5rem;
+        border: none;
+        border-radius: 3px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: #333;
+        cursor: pointer;
+      }
+
+      #login-btn:hover {
+        background-color: #555;
+      }
+    </style>
+  </head>
+
+  <body>
+    <h1>SignUp</h1>
+    <form id="OfficerSignUp-form" action="/Officer/signup" method="post">
+      <label for="username">Username:</label>
+      <input type="text" id="username" name="username" required><br><br>
+      <label for="EmployeeID">EmployeeID:</label>
+      <input type="text" id="EmployeeID" name="EmployeeID" required><br><br>
+      <label for="password">Password:</label>
+      <input type="password" id="password" name="password" required><br><br>
+      <input type="submit" value="SignUp">
+    </form>
+    <div id="message"></div>
+    <br><br>
+    <button id="login-btn" onclick="window.location.href = 'OfficerLogin.html'">Already registered? Log In here</button>
+
+    <script src="OfficerSignup.js"></script>
+  </body>
+</html>
